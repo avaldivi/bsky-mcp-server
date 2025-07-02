@@ -1452,6 +1452,96 @@ Description: ${resource.description}
   }
 );
 
+server.tool(
+  "reply-watch",
+  "Interpret a rising sign and reply with Moon message",
+  {
+    text: z.string().describe("User's rising sign (e.g., 'I'm a Leo rising')"),
+    replyTo: z.string().optional().describe("Optional URI of the post to reply to"),
+  },
+  async ({ text, replyTo }) => {
+    if (!agent) {
+      return mcpErrorResponse("Not connected to Bluesky. Check your environment variables.");
+    }
+
+    try {
+      const signs = [
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+      ];
+
+      const risingSign = signs.find(sign =>
+        text.toLowerCase().includes(sign.toLowerCase())
+      );
+
+      if (!risingSign) {
+        return mcpErrorResponse("Could not extract a valid rising sign from the input.");
+      }
+
+      const moonRes = await fetch('http://localhost:3000/interpret', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ risingSign }),
+      });
+
+      if (!moonRes.ok) {
+        throw new Error(`Moon bot API failed: ${moonRes.status}`);
+      }
+
+      const { message } = await moonRes.json();
+      const postContent = message || "Here's your Moon update 🌕";
+
+      const record: any = {
+        text: postContent,
+        createdAt: new Date().toISOString(),
+      };
+
+      if (replyTo) {
+        try {
+          const parts = replyTo.split('/');
+          const did = parts[2];
+          const rkey = parts[parts.length - 1];
+
+          const cidResponse = await agent.app.bsky.feed.getPostThread({ uri: replyTo });
+          if (!cidResponse.success) {
+            throw new Error('Could not get post information');
+          }
+
+          if (process.env.DEBUG === 'true') {
+            process.stderr.write(`[MCP DEBUG] cidResponse: ${JSON.stringify(cidResponse)}\n`);
+          }
+
+          const threadPost = cidResponse.data.thread as any;
+          const parentUri = threadPost.post.uri;
+          const parentCid = threadPost.post.cid;
+
+
+          const rootUri = threadPost.post?.record?.reply?.root?.uri || parentUri;
+          const rootCid = threadPost.post?.record?.reply?.root?.cid || parentCid;
+
+          if (process.env.DEBUG === 'true') {
+            process.stderr.write(`[MCP DEBUG] parentCid: ${JSON.stringify(parentCid)}\n`);
+          }
+
+          record.reply = {
+            parent: { uri: parentUri, cid: parentCid },
+            root: { uri: rootUri, cid: rootCid },
+          };
+        } catch (error) {
+          return mcpErrorResponse(`Failed to parse reply reference: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+
+      const response = await agent.post(record);
+      return mcpSuccessResponse(`Moon message posted! URI: ${response.uri}`);
+    } catch (err: any) {
+      console.error("[Moon Bot Error]", err);
+      return mcpErrorResponse("Something went wrong. Please try again later. 🌒");
+    }
+  }
+);
+
+
 // Start the server
 (async function() {
   try {
