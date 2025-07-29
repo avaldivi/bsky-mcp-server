@@ -59,3 +59,4 @@ sessions/
 .cursorrules
 
 POST_FORMAT_SPEC.md
+claude_desktop_config.example.json

@@ -8,6 +8,8 @@
     "build": "tsc && chmod 755 build/src/index.js && mkdir -p build/test",
     "start": "node build/src/index.js",
     "dev": "tsc && node build/src/index.js",
+    "firehose": "tsc && node build/src/firehose.js",
+    "websocket": "tsc && node build/src/websocket-test.js",
     "test": "pnpm run build && node build/test/final-test.js",
     "test:get-thread": "pnpm run build && node build/test/tools/test-get-post-thread.js",
     "test:url-converter": "pnpm run build && node build/test/url-converter/test-url-converter.js",
@@ -23,15 +25,22 @@
   "license": "MIT",
   "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "dependencies": {
-    "@atproto/api": "^0.14.9",
+    "@atproto/api": "^0.15.23",
+    "@atproto/sync": "^0.1.28",
+    "@atproto/xrpc": "^0.7.0",
     "@modelcontextprotocol/sdk": "^1.7.0",
+    "@skyware/firehose": "^0.5.1",
+    "atproto-firehose": "^0.2.2",
+    "cbor-x": "^1.6.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "node-fetch": "^3.3.2",
+    "ws": "^8.18.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
+    "@types/ws": "^8.18.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }

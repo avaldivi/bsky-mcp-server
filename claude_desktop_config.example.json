@@ -4,8 +4,8 @@
         "command": "node",
         "args": ["/path/to/bsky-mcp-server/build/src/index.js"],
         "env": {
-            "BLUESKY_IDENTIFIER": "your-bsky-handle",
-            "BLUESKY_APP_PASSWORD": "your-app-password",
+            "BLUESKY_IDENTIFIER": "celestialdoses.bsky.social",
+            "BLUESKY_APP_PASSWORD": "g52b-rnau-inzg-i33h",
             "BLUESKY_SERVICE_URL": "https://bsky.social"
           }
       }
