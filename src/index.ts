@@ -1475,66 +1475,6 @@ server.tool(
   }
 );
 
-// export function registerReplyScanTool(server: any, agent: any) {
-//   server.tool(
-//     "scan-replies",
-//     "Scan author feed and reply to rising sign replies",
-//     {
-//       user: z.string().describe("The handle or DID of the user to watch"),
-//       sinceMinutes: z.number().default(15).describe("Only check posts created in the last N minutes")
-//     },
-//     async ({ user, sinceMinutes }: {user: any, sinceMinutes: any}) => {
-//       if (!agent) {
-//         return mcpErrorResponse("Not connected to Bluesky. Check your environment variables.");
-//       }
-
-//       try {
-//         const profileResponse = await agent.getProfile({ actor: cleanHandle(user) });
-//         if (!profileResponse.success) {
-//           return mcpErrorResponse(`User not found: ${user}`);
-//         }
-
-//         const actor = profileResponse.data.did;
-//         const { data } = await agent.app.bsky.feed.getAuthorFeed({ actor, limit: 100 });
-//         const posts = data.feed.filter((p: any) => p.post.replyCount > 0);
-
-//         const cutoff = Date.now() - sinceMinutes * 60 * 1000;
-
-//         const risingRegex = /aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces/i;
-//         let replyCount = 0;
-
-//         for (const post of posts) {
-//           const postCreatedAt = new Date(post.post.record.createdAt).getTime();
-//           if (postCreatedAt < cutoff) continue;
-
-//           const thread = await agent.app.bsky.feed.getPostThread({ uri: post.post.uri });
-//           const replies = thread?.data?.replies || [];
-
-//           for (const reply of replies) {
-//             const replyText = reply.post.record.text;
-//             if (!replyText || !risingRegex.test(replyText)) continue;
-
-//             try {
-//               const result = await handleRisingReply({
-//                 text: replyText,
-//                 replyTo: reply.post.uri,
-//                 agent
-//               });
-//               console.log("✅ Replied to:", reply.post.uri, "→", result.uri);
-//               replyCount++;
-//             } catch (err) {
-//               console.warn("⚠️ Could not reply to:", reply.post.uri, err);
-//             }
-//           }
-//         }
-
-//         return mcpSuccessResponse(`Scanned and replied to ${replyCount} rising sign posts.`);
-//       } catch (err: any) {
-//         return mcpErrorResponse(`Error scanning replies: ${err.message}`);
-//       }
-//     }
-//   );
-// }
 
 // Start the server
 (async function() {

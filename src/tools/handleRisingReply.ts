@@ -21,7 +21,7 @@ export async function handleRisingReply({
 
   if (!risingSign) throw new Error("Could not extract a valid rising sign from the input.");
 
-  const moonRes = await fetch('http://localhost:3000/interpret', {
+  const moonRes = await fetch(`${process.env.MOON_CYCLE_SERVER_URL}/interpret`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ risingSign }),

@@ -1,0 +1,30 @@
+name: Scan Replies Every 5 Minutes
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # every 5 minutes
+  workflow_dispatch:       # allow manual run too
+
+jobs:
+  scan-replies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run reply scanner
+        run: node scripts/runReplyScan.js
+        env:
+          BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          BLUESKY_SERVICE_URL:  ${{ secrets.BLUESKY_SERVICE_URL }}
+          MOON_CYCLE_SERVER_URL:  ${{ secrets.MOON_CYCLE_SERVER_URL }}
