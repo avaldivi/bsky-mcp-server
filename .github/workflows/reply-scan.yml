@@ -27,7 +27,9 @@ jobs:
         run: pnpm install
 
       - name: Run reply scanner
-        run: node scripts/runReplyScan.js
+        run: node src/scripts/runReplyScan.js
         env:
-          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
-          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
+          BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          BLUESKY_SERVICE_URL:  ${{ secrets.BLUESKY_SERVICE_URL }}
+          MOON_CYCLE_SERVER_URL:  ${{ secrets.MOON_CYCLE_SERVER_URL }}
