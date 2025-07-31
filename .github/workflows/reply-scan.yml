@@ -26,8 +26,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Compile TypeScript
+        run: pnpm tsc
+
       - name: Run reply scanner
-        run: node src/scripts/runReplyScan.js
+        run: node build/src/scripts/runReplyScan.js
         env:
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
