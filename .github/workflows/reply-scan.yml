@@ -31,6 +31,7 @@ jobs:
         with:
           name: reply-cache
           path: .
+        continue-on-error: true
 
       - name: Compile TypeScript
         run: pnpm tsc
