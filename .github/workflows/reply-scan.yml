@@ -2,7 +2,7 @@ name: Scan Replies Every 5 Minutes
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"  # every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 18
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v2
@@ -26,6 +26,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Download previous replied cache
+        uses: actions/download-artifact@v4
+        with:
+          name: reply-cache
+          path: .
+
       - name: Compile TypeScript
         run: pnpm tsc
 
@@ -34,5 +40,11 @@ jobs:
         env:
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          BLUESKY_SERVICE_URL:  ${{ secrets.BLUESKY_SERVICE_URL }}
-          MOON_CYCLE_SERVER_URL:  ${{ secrets.MOON_CYCLE_SERVER_URL }}
+          BLUESKY_SERVICE_URL: ${{ secrets.BLUESKY_SERVICE_URL }}
+          MOON_CYCLE_SERVER_URL: ${{ secrets.MOON_CYCLE_SERVER_URL }}
+
+      - name: Upload updated replied cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: reply-cache
+          path: replied_cache.json
