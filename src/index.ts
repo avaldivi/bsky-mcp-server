@@ -17,7 +17,7 @@ import { preprocessPosts, formatPostThread } from "./llm-preprocessor.js";
 import { registerResources, resourcesList } from './resources.js';
 import { registerPrompts } from './prompts.js';
 import { handleRisingReply } from "./tools/handleRisingReply.js";
-import { registerReplyScanTool } from './tools/replyWatchTool.js'
+import { registerReplyScanTool } from './tools/registerReplyScanTool.js'
 
 // Load environment variables
 dotenv.config({ path: '.env' });
